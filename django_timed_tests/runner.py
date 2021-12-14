@@ -1,4 +1,4 @@
 from django.test.runner import DiscoverRunner
 
-class TimedTestRunned(DiscoverRunner):
+class TimedTestRunner(DiscoverRunner):
     pass
