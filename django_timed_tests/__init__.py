@@ -1,1 +1,1 @@
-from .runner import TimedTestRunner
+from .runner import TimedTestRunner  # noqa
