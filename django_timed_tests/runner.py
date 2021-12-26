@@ -1,15 +1,16 @@
 from time import time
 from unittest import TextTestResult, TextTestRunner
-from django.test.runner import DiscoverRunner, RemoteTestResult, RemoteTestRunner, ParallelTestSuite
+
+from django.test.runner import DiscoverRunner, ParallelTestSuite, RemoteTestResult, RemoteTestRunner
 
 
 class TimedRemoteTestResult(RemoteTestResult):
     def startTest(self, test):
         self.testsRun += 1
-        self.events.append(('startTest', self.test_index, time()))
+        self.events.append(("startTest", self.test_index, time()))
 
     def addSuccess(self, test):
-        self.events.append(('addSuccess', self.test_index, time()))
+        self.events.append(("addSuccess", self.test_index, time()))
 
 
 class TimedRemoteTestRunner(RemoteTestRunner):
