@@ -1,2 +1,0 @@
-time-machine==2.5.0
-ipdb
