@@ -1,5 +1,8 @@
+from operator import itemgetter
 from time import time
 from unittest import TextTestResult, TextTestRunner
+
+from tabulate import tabulate
 
 from django.test.runner import DiscoverRunner, ParallelTestSuite, RemoteTestResult, RemoteTestRunner
 
@@ -48,7 +51,37 @@ class TimedTextTestResult(TextTestResult):
 class TimedTextTestRunner(TextTestRunner):
     resultclass = TimedTextTestResult
 
+    def run(self, test):
+        result = super().run(test)
+
+        report = generate_report(durations=result.durations)
+
+        self.stream.write(report)
+        self.stream.flush()
+
+        return result
+
 
 class TimedTestRunner(DiscoverRunner):
     test_runner = TimedTextTestRunner
     parallel_test_suite = TimedParallelTestSuite
+
+
+NUM_SLOWEST_TESTS = 10
+
+
+def generate_report(durations):
+    report_data = sorted(
+        [
+            (
+                f"{test.__class__.__module__}.{test.__class__.__name__}.{test._testMethodName}",
+                duration,
+            )
+            for test, duration in durations.items()
+        ],
+        key=itemgetter(1),
+        reverse=True,
+    )[:NUM_SLOWEST_TESTS]
+
+    table = tabulate(report_data, headers=["Test", "Duration (s)"], tablefmt="github")
+    return table

@@ -13,7 +13,7 @@ HERE = Path(__file__).parent
 README_TEXT = (HERE / "README.md").read_text()
 
 PYTHON_REQUIRES = ">=3.6"
-INSTALL_REQUIRES = ["Django>=2.0"]
+INSTALL_REQUIRES = ["Django>=2.0", "tabulate"]
 
 setup(
     name=NAME,

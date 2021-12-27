@@ -6,7 +6,7 @@ from time import time
 
 from django.test import TestCase
 
-from django_timed_tests.runner import TimedTestRunner
+from django_timed_tests.runner import NUM_SLOWEST_TESTS, TimedTestRunner
 
 EXAMPLE_TEST_SUITE_PATH = "tests.examples"
 TOTAL_TEST_DURATION = 18
@@ -28,6 +28,21 @@ class TimedTestRunnerTestCase(TestCase):
 
         multiprocessing.set_start_method("fork")
 
+    def _test_formatting(self, stream):
+        text = stream.getvalue()
+        table_start = text.find("OK")
+        table = text[table_start + 3]  # Need to account for lenght of 'OK\n'
+        rows = table.split("\n")[2:]  # Skip header and horizontal line
+
+        for row in rows:
+            clean_row = row[1:-1]  # Skip leading and trailing pipes
+            test_name, duration = [r.strip() for r in clean_row.split("|")]  # Split by middle pipe
+
+            expected_duration = int(test_name.rsplit("_", 1)[-1])  # test_method_X lasts X seconds
+            self.assertAlmostEqual(expected_duration, int(duration), places=1)
+
+        self.assertLessEqual(len(rows), NUM_SLOWEST_TESTS)
+
     def _test_run(self, parallel=1):
         start = time()
         django_test_runner = TimedTestRunner(parallel=parallel)
@@ -45,6 +60,8 @@ class TimedTestRunnerTestCase(TestCase):
         for test, duration in result.durations.items():
             expected_duration = int(test._testMethodName.split("_")[-1])
             self.assertAlmostEqual(expected_duration, duration, places=1)
+
+        self._test_formatting(output_stream)
 
     def test_sequential(self):
         self._test_run()
