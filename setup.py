@@ -31,7 +31,8 @@ setup(
         "Programming Language :: Python :: 3.6",
     ],
     # TODO: we're only using a single module, change this to py_modules
-    packages=find_packages(exclude=("tests",)),
+    package_dir={"": "src"},
+    packages=find_packages(where="src"),
     include_package_data=True,
     python_requires=PYTHON_REQUIRES,
     install_requires=INSTALL_REQUIRES,

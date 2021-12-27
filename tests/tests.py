@@ -7,11 +7,13 @@ from django.test import TestCase
 
 from django_timed_tests.runner import TimedTestRunner
 
+EXAMPLE_TEST_SUITE_PATH = "tests.examples"
+
 
 class DummyTestCase(TestCase):
     def test_dummy(self):
         django_test_runner = TimedTestRunner()
-        suite = django_test_runner.build_suite(["examples"])
+        suite = django_test_runner.build_suite([EXAMPLE_TEST_SUITE_PATH])
         runner_kwargs = django_test_runner.get_test_runner_kwargs()
         output_stream = StringIO()
         runner_kwargs["stream"] = output_stream
@@ -41,7 +43,7 @@ class DummyParallelTestCase(TestCase):
 
     def test_dummy_parallel(self):
         django_test_runner = TimedTestRunner(parallel=3)
-        suite = django_test_runner.build_suite(["examples"])
+        suite = django_test_runner.build_suite([EXAMPLE_TEST_SUITE_PATH])
         runner_kwargs = django_test_runner.get_test_runner_kwargs()
         output_stream = StringIO()
         runner_kwargs["stream"] = output_stream
