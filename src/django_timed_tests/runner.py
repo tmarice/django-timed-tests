@@ -1,3 +1,4 @@
+from collections import defaultdict
 from operator import itemgetter
 from time import time
 from unittest import TextTestResult, TextTestRunner
@@ -70,18 +71,37 @@ class TimedTestRunner(DiscoverRunner):
 NUM_SLOWEST_TESTS = 10
 
 
-def generate_report(durations):
-    report_data = sorted(
-        [
-            (
-                f"{test.__class__.__module__}.{test.__class__.__name__}.{test._testMethodName}",
-                duration,
-            )
-            for test, duration in durations.items()
-        ],
-        key=itemgetter(1),
-        reverse=True,
-    )[:NUM_SLOWEST_TESTS]
+def generate_report(durations, limit=NUM_SLOWEST_TESTS, full_report=False):
+    reports = []
+    method_report_data, class_report_data, module_report_data = _get_breakdown(durations)
+    if limit is not None and not full_report:
+        method_report_data = method_report_data[:NUM_SLOWEST_TESTS]
 
-    table = tabulate(report_data, headers=["Test", "Duration (s)"], tablefmt="github")
-    return table
+    if full_report:
+        reports.append(tabulate(module_report_data, headers=["Module", "Duration (s)"], tablefmt="github"))
+        reports.append(tabulate(class_report_data, headers=["Class", "Duration (s)"], tablefmt="github"))
+
+    reports.append(tabulate(method_report_data, headers=["Test", "Duration (s)"], tablefmt="github"))
+
+    report = "\n\n".join(reports)
+    return report
+
+
+def _get_breakdown(durations):
+    method_report_data = {}
+    class_report_data = defaultdict(int)
+    module_report_data = defaultdict(int)
+
+    for test, duration in durations.items():
+        module_name = test.__class__.__module__
+        class_name = test.__class__.__name__
+        method_name = test._testMethodName
+
+        method_report_data[f"{module_name}.{class_name}.{method_name}"] = duration
+        class_report_data[f"{module_name}.{class_name}"] += duration
+        module_report_data[module_name] += duration
+
+    return [
+        sorted(report_data.items(), key=itemgetter(1))
+        for report_data in (method_report_data, class_report_data, module_report_data)
+    ]
