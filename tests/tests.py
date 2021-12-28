@@ -31,7 +31,7 @@ class TimedTestRunnerTestCase(TestCase):
     def _test_formatting(self, stream):
         text = stream.getvalue()
         table_start = text.find("OK")
-        table = text[table_start + 3]  # Need to account for lenght of 'OK\n'
+        table = text[table_start + 3 :]  # Need to account for lenght of 'OK\n'
         rows = table.split("\n")[2:]  # Skip header and horizontal line
 
         last_duration = float("inf")
