@@ -28,7 +28,7 @@ class TimedTestRunnerTestCase(TestCase):
 
         multiprocessing.set_start_method("fork")
 
-    def _test_formatting(self, stream):
+    def _test_short_formatting(self, stream):
         text = stream.getvalue()
         table_start = text.find("OK")
         table = text[table_start + 3 :]  # Need to account for lenght of 'OK\n'
@@ -47,6 +47,22 @@ class TimedTestRunnerTestCase(TestCase):
 
         self.assertEqual(len(rows), NUM_SLOWEST_TESTS)
 
+    def _test_full_formatting(self, stream):
+        text = stream.getvalue()
+        tables_start = text.find("OK")
+        tables_text = text[tables_start + 3 :]  # Need to account for lenght of 'OK\n'
+        tables = tables_text.split("\n\n")
+
+        for i, table in enumerate(tables):
+            rows = table.split("\n")[2:]  # Skip header and horizontal line
+
+            if i == 0:  # module table
+                self.assertEqual(len(rows), 1)
+            elif i == 1:  # class table
+                self.assertEqual(len(rows), 3)
+            elif i == 2:  # method table
+                self.assertEqual(len(rows), 12)
+
     def _test_run(self, parallel=1, full_report=False):
         start = time()
 
@@ -55,6 +71,7 @@ class TimedTestRunnerTestCase(TestCase):
         runner_kwargs = django_test_runner.get_test_runner_kwargs()
         output_stream = StringIO()
         runner_kwargs["stream"] = output_stream
+        runner_kwargs["full_report"] = full_report
         test_runner = django_test_runner.test_runner(**runner_kwargs)
 
         result = test_runner.run(suite)
@@ -66,10 +83,24 @@ class TimedTestRunnerTestCase(TestCase):
             expected_duration = int(test._testMethodName.split("_")[-1])
             self.assertAlmostEqual(expected_duration, duration, places=1)
 
-        self._test_formatting(output_stream)
+        if full_report:
+            self._test_full_formatting(output_stream)
+        else:
+            self._test_short_formatting(output_stream)
+        # print(output_stream.getvalue())
 
-    def test_sequential(self):
+    def test_sequential_short_output(self):
         self._test_run()
 
-    def test_parallel(self):
+    def test_parallel_short_output(self):
         self._test_run(parallel=3)
+
+    def test_sequential_full_output(self):
+        self._test_run(full_report=True)
+
+    def test_parallel_full_output(self):
+        self._test_run(parallel=3, full_report=True)
+
+    def test_failed_test_not_measured(self):
+        """Duration of failed tests shouldn't be recoreded."""
+        pass
