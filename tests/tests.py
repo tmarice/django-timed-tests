@@ -34,14 +34,18 @@ class TimedTestRunnerTestCase(TestCase):
         table = text[table_start + 3]  # Need to account for lenght of 'OK\n'
         rows = table.split("\n")[2:]  # Skip header and horizontal line
 
+        last_duration = float("inf")
         for row in rows:
             clean_row = row[1:-1]  # Skip leading and trailing pipes
             test_name, duration = [r.strip() for r in clean_row.split("|")]  # Split by middle pipe
+            duration = int(float(duration))
 
             expected_duration = int(test_name.rsplit("_", 1)[-1])  # test_method_X lasts X seconds
-            self.assertAlmostEqual(expected_duration, int(duration), places=1)
+            self.assertAlmostEqual(expected_duration, duration, places=1)
+            self.assertLessEqual(duration, last_duration)
+            last_duration = duration
 
-        self.assertLessEqual(len(rows), NUM_SLOWEST_TESTS)
+        self.assertEqual(len(rows), NUM_SLOWEST_TESTS)
 
     def _test_run(self, parallel=1):
         start = time()

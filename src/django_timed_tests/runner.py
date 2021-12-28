@@ -102,6 +102,6 @@ def _get_breakdown(durations):
         module_report_data[module_name] += duration
 
     return [
-        sorted(report_data.items(), key=itemgetter(1))
+        sorted(report_data.items(), key=itemgetter(1), reverse=True)
         for report_data in (method_report_data, class_report_data, module_report_data)
     ]
