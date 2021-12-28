@@ -30,7 +30,6 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
     ],
-    # TODO: we're only using a single module, change this to py_modules
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     include_package_data=True,
