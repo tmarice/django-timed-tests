@@ -4,6 +4,9 @@ from django.test import TestCase
 
 
 class DummyTestCase1(TestCase):
+    def test_dummy_0(self):
+        self.assertTrue(True)
+
     def test_dummy_1(self):
         self.assertTrue(True)
         sleep(1)
@@ -18,6 +21,9 @@ class DummyTestCase1(TestCase):
 
 
 class DummyTestCase2(TestCase):
+    def test_dummy_0(self):
+        self.assertTrue(True)
+
     def test_dummy_1(self):
         self.assertTrue(True)
         sleep(1)
@@ -32,6 +38,9 @@ class DummyTestCase2(TestCase):
 
 
 class DummyTestCase3(TestCase):
+    def test_dummy_0(self):
+        self.assertTrue(True)
+
     def test_dummy_1(self):
         self.assertTrue(True)
         sleep(1)
