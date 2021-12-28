@@ -52,10 +52,15 @@ class TimedTextTestResult(TextTestResult):
 class TimedTextTestRunner(TextTestRunner):
     resultclass = TimedTextTestResult
 
+    def __init__(self, full_report=False, **kwargs):
+        super().__init__(**kwargs)
+
+        self._full_report = full_report
+
     def run(self, test):
         result = super().run(test)
 
-        report = generate_report(durations=result.durations)
+        report = generate_report(durations=result.durations, full_report=self._full_report)
 
         self.stream.write(report)
         self.stream.flush()
@@ -66,6 +71,27 @@ class TimedTextTestRunner(TextTestRunner):
 class TimedTestRunner(DiscoverRunner):
     test_runner = TimedTextTestRunner
     parallel_test_suite = TimedParallelTestSuite
+
+    def __init__(self, full_report=False, **kwargs):
+        super().__init__(**kwargs)
+
+        self._full_report = full_report
+
+    @classmethod
+    def add_arguments(cls, parser):
+        super().add_arguments(parser)
+        parser.add_argument(
+            "--full-report",
+            action="store_true",
+            dest="full_report",
+            help="Generate a module, class and method duration breakdown",
+        )
+
+    def get_test_runner_kwargs(self):
+        kwargs = super().get_test_runner_kwargs()
+        kwargs["full_report"] = self._full_report
+
+        return kwargs
 
 
 NUM_SLOWEST_TESTS = 10

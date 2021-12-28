@@ -47,8 +47,9 @@ class TimedTestRunnerTestCase(TestCase):
 
         self.assertEqual(len(rows), NUM_SLOWEST_TESTS)
 
-    def _test_run(self, parallel=1):
+    def _test_run(self, parallel=1, full_report=False):
         start = time()
+
         django_test_runner = TimedTestRunner(parallel=parallel)
         suite = django_test_runner.build_suite([EXAMPLE_TEST_SUITE_PATH])
         runner_kwargs = django_test_runner.get_test_runner_kwargs()
