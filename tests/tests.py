@@ -2,7 +2,7 @@ import multiprocessing
 import os
 import sys
 from io import StringIO
-from time import time
+from time import perf_counter
 from unittest.mock import patch
 
 from django.core import management
@@ -66,7 +66,7 @@ class TimedTestRunnerTestCase(TestCase):
                 self.assertEqual(len(rows), 12)
 
     def _test_run(self, parallel=1, full_report=False):
-        start = time()
+        start = perf_counter()
 
         django_test_runner = TimedTestRunner(parallel=parallel)
         suite = django_test_runner.build_suite([EXAMPLE_TEST_SUITE_PATH])
@@ -78,7 +78,7 @@ class TimedTestRunnerTestCase(TestCase):
 
         result = test_runner.run(suite)
 
-        duration = time() - start
+        duration = perf_counter() - start
         self.assertAlmostEqual(duration, TOTAL_TEST_DURATION / parallel, places=0)
 
         for test, duration in result.durations.items():
