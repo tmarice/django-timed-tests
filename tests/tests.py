@@ -3,8 +3,10 @@ import os
 import sys
 from io import StringIO
 from time import time
+from unittest.mock import patch
 
-from django.test import TestCase
+from django.core import management
+from django.test import TestCase, override_settings
 
 from django_timed_tests.runner import NUM_SLOWEST_TESTS, TimedTestRunner
 
@@ -100,6 +102,24 @@ class TimedTestRunnerTestCase(TestCase):
 
     def test_parallel_full_output(self):
         self._test_run(parallel=3, full_report=True)
+
+    @patch("django.core.management.commands.test.Command.handle", return_value="")
+    @override_settings(TEST_RUNNER="django_timed_tests.TimedTestRunner")
+    def test_command_invocation_short_report(self, mock_handle):
+        management.call_command("test", EXAMPLE_TEST_SUITE_PATH)
+
+        args, kwargs = mock_handle.call_args
+
+        self.assertFalse(kwargs["full_report"])
+
+    @patch("django.core.management.commands.test.Command.handle", return_value="")
+    @override_settings(TEST_RUNNER="django_timed_tests.TimedTestRunner")
+    def test_command_invocation_full_report(self, mock_handle):
+        management.call_command("test", EXAMPLE_TEST_SUITE_PATH, "--full-report")
+
+        args, kwargs = mock_handle.call_args
+
+        self.assertTrue(kwargs["full_report"])
 
     def test_failed_test_not_measured(self):
         """Duration of failed tests shouldn't be recoreded."""
