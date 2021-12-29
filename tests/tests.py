@@ -65,10 +65,10 @@ class TimedTestRunnerTestCase(TestCase):
             elif i == 2:  # method table
                 self.assertEqual(len(rows), 12)
 
-    def _test_run(self, parallel=1, full_report=False):
+    def _test_run(self, parallel=1, full_report=False, debug_sql=False):
         start = perf_counter()
 
-        django_test_runner = TimedTestRunner(parallel=parallel)
+        django_test_runner = TimedTestRunner(parallel=parallel, debug_sql=debug_sql)
         suite = django_test_runner.build_suite([EXAMPLE_TEST_SUITE_PATH])
         runner_kwargs = django_test_runner.get_test_runner_kwargs()
         output_stream = StringIO()
@@ -102,6 +102,9 @@ class TimedTestRunnerTestCase(TestCase):
 
     def test_parallel_full_output(self):
         self._test_run(parallel=3, full_report=True)
+
+    def test_debug_sql(self):
+        self._test_run(debug_sql=True)
 
     @patch("django.core.management.commands.test.Command.handle", return_value="")
     @override_settings(TEST_RUNNER="django_timed_tests.TimedTestRunner")

@@ -49,6 +49,10 @@ class TimedTextTestResult(TextTestResult):
         return super().addSuccess(test)
 
 
+class TimedDebugSQLTextTestResult(TimedTextTestResult):
+    pass
+
+
 class TimedTextTestRunner(TextTestRunner):
     resultclass = TimedTextTestResult
 
@@ -86,6 +90,9 @@ class TimedTestRunner(DiscoverRunner):
             dest="full_report",
             help="Generate a module, class and method duration breakdown",
         )
+
+    def get_resultclass(self):
+        return TimedDebugSQLTextTestResult if self.debug_sql else None
 
     def get_test_runner_kwargs(self):
         kwargs = super().get_test_runner_kwargs()
