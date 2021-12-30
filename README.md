@@ -90,3 +90,21 @@ OK
 | tests.examples.DummyTestCase1.test_dummy_0 |    0.00022184  |
 | tests.examples.DummyTestCase3.test_dummy_0 |    0.000178818 |
 ```
+
+### Combining with your own test runner
+`TimedTestRunner` tries to be minimally invasive, and integrating it into your custom test runner shouldn't be too complex.
+
+If your custom runner just inherits from `DiscoverRunner`, without redefining `DiscoverRunner.test_runner`,  `DiscoverRunner.parallel_test_runner` and `DiscoverRunner.get_resultclass`, you should be fine with just inheriting `TimedTestRunner` and calling `super()` at the beginning of your overriden methods:
+
+```
+class MyOwnTestRunner(TimedTestRunner):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # Do something else
+
+    ...
+```
+
+If your test runner also uses custom `TestRunner` or `TestResult` classes, best course of action would be to inspect the `django_timed_tests.runner` module to see which classes should be inherited and which attributes and method should be overridden.
