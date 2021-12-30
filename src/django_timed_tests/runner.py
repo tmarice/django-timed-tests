@@ -67,6 +67,7 @@ class TimedTextTestRunner(TextTestRunner):
         report = generate_report(durations=result.durations, full_report=self._full_report)
 
         self.stream.write(report)
+        self.stream.write("\n")
         self.stream.flush()
 
         return result
