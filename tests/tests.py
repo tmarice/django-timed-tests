@@ -33,7 +33,7 @@ class TimedTestRunnerTestCase(TestCase):
     def _test_short_formatting(self, stream):
         text = stream.getvalue()
         table_start = text.find("OK")
-        table = text[table_start + 3 :]  # Need to account for lenght of 'OK\n'
+        table = text[table_start + 3 :].strip()  # Need to account for lenght of 'OK\n'
         rows = table.split("\n")[2:]  # Skip header and horizontal line
 
         last_duration = float("inf")
@@ -56,6 +56,7 @@ class TimedTestRunnerTestCase(TestCase):
         tables = tables_text.split("\n\n")
 
         for i, table in enumerate(tables):
+            table = table.strip()
             rows = table.split("\n")[2:]  # Skip header and horizontal line
 
             if i == 0:  # module table
