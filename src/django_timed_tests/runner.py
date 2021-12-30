@@ -112,10 +112,14 @@ def generate_report(durations, limit=NUM_SLOWEST_TESTS, full_report=False):
         method_report_data = method_report_data[:NUM_SLOWEST_TESTS]
 
     if full_report:
-        reports.append(tabulate(module_report_data, headers=["Module", "Duration (s)"], tablefmt="github"))
-        reports.append(tabulate(class_report_data, headers=["Class", "Duration (s)"], tablefmt="github"))
+        reports.append(
+            tabulate(module_report_data, headers=["Module", "Duration (s)"], tablefmt="github", floatfmt=".5f")
+        )
+        reports.append(
+            tabulate(class_report_data, headers=["Class", "Duration (s)"], tablefmt="github", floatfmt=".5f")
+        )
 
-    reports.append(tabulate(method_report_data, headers=["Test", "Duration (s)"], tablefmt="github"))
+    reports.append(tabulate(method_report_data, headers=["Test", "Duration (s)"], tablefmt="github", floatfmt=".5f"))
 
     report = "\n\n".join(reports)
     return report
