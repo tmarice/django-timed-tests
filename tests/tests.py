@@ -10,7 +10,7 @@ from django.test import TestCase, override_settings
 
 from django_timed_tests.runner import NUM_SLOWEST_TESTS, TimedTestRunner
 
-EXAMPLE_TEST_SUITE_PATH = "tests.examples"
+EXAMPLE_TEST_SUITE_PATH = "tests.example_tests"
 TOTAL_TEST_DURATION = 18
 
 
@@ -60,7 +60,7 @@ class TimedTestRunnerTestCase(TestCase):
             rows = table.split("\n")[2:]  # Skip header and horizontal line
 
             if i == 0:  # module table
-                self.assertEqual(len(rows), 1)
+                self.assertEqual(len(rows), 2)
             elif i == 1:  # class table
                 self.assertEqual(len(rows), 3)
             elif i == 2:  # method table
