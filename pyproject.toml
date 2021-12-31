@@ -18,6 +18,7 @@ sections = "FUTURE,STDLIB,THIRDPARTY,DJANGO,FIRSTPARTY,LOCALFOLDER"
 branch = true
 source = ["django_timed_tests"]
 concurrency = ["multiprocessing"]
+parallel = true
 
 [tool.coverage.report]
 show_missing = true

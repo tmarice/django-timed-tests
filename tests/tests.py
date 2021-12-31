@@ -2,7 +2,6 @@ import multiprocessing
 import os
 import sys
 from io import StringIO
-from time import perf_counter
 from unittest.mock import patch
 
 from django.core import management
@@ -11,7 +10,17 @@ from django.test import TestCase, override_settings
 from django_timed_tests.runner import NUM_SLOWEST_TESTS, TimedTestRunner
 
 EXAMPLE_TEST_SUITE_PATH = "tests.example_tests"
-TOTAL_TEST_DURATION = 18
+
+
+class FakeTime:
+    def __init__(self):
+        self._time = 0
+
+    def perf_counter(self):
+        return self._time
+
+    def sleep(self, t):
+        self._time += t
 
 
 class TimedTestRunnerTestCase(TestCase):
@@ -67,7 +76,7 @@ class TimedTestRunnerTestCase(TestCase):
                 self.assertEqual(len(rows), 12)
 
     def _test_run(self, parallel=1, full_report=False, debug_sql=False):
-        start = perf_counter()
+        fake_time = FakeTime()
 
         django_test_runner = TimedTestRunner(parallel=parallel, debug_sql=debug_sql)
         suite = django_test_runner.build_suite([EXAMPLE_TEST_SUITE_PATH])
@@ -77,10 +86,10 @@ class TimedTestRunnerTestCase(TestCase):
         runner_kwargs["full_report"] = full_report
         test_runner = django_test_runner.test_runner(**runner_kwargs)
 
-        result = test_runner.run(suite)
-
-        duration = perf_counter() - start
-        self.assertAlmostEqual(duration, TOTAL_TEST_DURATION / parallel, places=0)
+        with patch("django_timed_tests.runner.time", new=fake_time), patch(
+            "tests.example_tests.tests_1.time", new=fake_time
+        ), patch("tests.example_tests.tests_2.time", new=fake_time):
+            result = test_runner.run(suite)
 
         for test, duration in result.durations.items():
             expected_duration = int(test._testMethodName.split("_")[-1])
