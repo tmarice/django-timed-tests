@@ -1,4 +1,4 @@
-from time import sleep
+import time
 
 from django.test import TestCase
 
@@ -9,12 +9,12 @@ class DummyTestCase1(TestCase):
 
     def test_dummy_1(self):
         self.assertTrue(True)
-        sleep(1)
+        time.sleep(1)
 
     def test_dummy_2(self):
         self.assertTrue(True)
-        sleep(2)
+        time.sleep(2)
 
     def test_dummy_3(self):
         self.assertTrue(True)
-        sleep(3)
+        time.sleep(3)

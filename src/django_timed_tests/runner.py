@@ -1,6 +1,6 @@
+import time
 from collections import defaultdict
 from operator import itemgetter
-from time import perf_counter
 from unittest import TextTestResult, TextTestRunner
 
 from tabulate import tabulate
@@ -11,10 +11,10 @@ from django.test.runner import DiscoverRunner, ParallelTestSuite, RemoteTestResu
 class TimedRemoteTestResult(RemoteTestResult):
     def startTest(self, test):
         self.testsRun += 1
-        self.events.append(("startTest", self.test_index, perf_counter()))
+        self.events.append(("startTest", self.test_index, time.perf_counter()))
 
     def addSuccess(self, test):
-        self.events.append(("addSuccess", self.test_index, perf_counter()))
+        self.events.append(("addSuccess", self.test_index, time.perf_counter()))
 
 
 class TimedRemoteTestRunner(RemoteTestRunner):
@@ -34,7 +34,7 @@ class TimedTextTestResult(TextTestResult):
 
     def startTest(self, test, start_time=None):
         if start_time is None:
-            start_time = perf_counter()
+            start_time = time.perf_counter()
 
         self._starts[test] = start_time
 
@@ -42,7 +42,7 @@ class TimedTextTestResult(TextTestResult):
 
     def addSuccess(self, test, end_time=None):
         if end_time is None:
-            end_time = perf_counter()
+            end_time = time.perf_counter()
 
         self.durations[test] = end_time - self._starts[test]
 
