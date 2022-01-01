@@ -3,7 +3,7 @@ import time
 from django.test import TestCase
 
 
-class DummyTestCase1(TestCase):
+class DummyTestCase_6(TestCase):
     def test_dummy_0(self):
         self.assertTrue(True)
 

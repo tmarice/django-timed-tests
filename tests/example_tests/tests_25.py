@@ -3,7 +3,7 @@ import time
 from django.test import TestCase
 
 
-class DummyTestCase2(TestCase):
+class DummyTestCase_10(TestCase):
     def test_dummy_0(self):
         self.assertTrue(True)
 
@@ -19,8 +19,12 @@ class DummyTestCase2(TestCase):
         self.assertTrue(True)
         time.sleep(3)
 
+    def test_dummy_4(self):
+        self.assertTrue(True)
+        time.sleep(4)
 
-class DummyTestCase3(TestCase):
+
+class DummyTestCase_15(TestCase):
     def test_dummy_0(self):
         self.assertTrue(True)
 
@@ -35,3 +39,11 @@ class DummyTestCase3(TestCase):
     def test_dummy_3(self):
         self.assertTrue(True)
         time.sleep(3)
+
+    def test_dummy_4(self):
+        self.assertTrue(True)
+        time.sleep(4)
+
+    def test_dummy_5(self):
+        self.assertTrue(True)
+        time.sleep(5)
