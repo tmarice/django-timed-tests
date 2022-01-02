@@ -5,6 +5,7 @@ from unittest import TextTestResult, TextTestRunner
 
 from tabulate import tabulate
 
+import django
 from django.test.runner import DiscoverRunner, ParallelTestSuite, RemoteTestResult, RemoteTestRunner
 
 
@@ -53,6 +54,10 @@ class TimedDebugSQLTextTestResult(TimedTextTestResult):
     pass
 
 
+class TimedPDBDebugResult(TimedTextTestResult):
+    pass
+
+
 class TimedTextTestRunner(TextTestRunner):
     resultclass = TimedTextTestResult
 
@@ -93,7 +98,10 @@ class TimedTestRunner(DiscoverRunner):
         )
 
     def get_resultclass(self):
-        return TimedDebugSQLTextTestResult if self.debug_sql else None
+        if self.debug_sql:
+            return TimedDebugSQLTextTestResult
+        elif django.VERSION[0] >= 3 and self.pdb:
+            return TimedPDBDebugResult
 
     def get_test_runner_kwargs(self):
         kwargs = super().get_test_runner_kwargs()

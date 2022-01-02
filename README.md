@@ -28,7 +28,7 @@ INSTALLED_APPS = [
 TEST_RUNNER = "django_timed_tests.TimedTestRunner"
 ```
 
-`django-timed-tests` support the use of `--parallel` and `--debug-sql` flags.
+`django-timed-tests` support the use of `--parallel`, `--debug-sql`, and `--pdb` flags.
 
 ### Regular report
 The regular report shows **10** slowest **passing** tests that were run, ordered by descending duration.

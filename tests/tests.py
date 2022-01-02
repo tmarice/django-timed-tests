@@ -90,11 +90,11 @@ class TimedTestRunnerTestCase(TestCase):
 
             self._test_table(rows)
 
-    def _test_run(self, parallel=1, full_report=False, debug_sql=False):
+    def _test_run(self, parallel=1, full_report=False, debug_sql=False, pdb=False):
         fake_time = FakeTime()
         output_stream = StringIO()
 
-        django_test_runner = TimedTestRunner(parallel=parallel, debug_sql=debug_sql)
+        django_test_runner = TimedTestRunner(parallel=parallel, debug_sql=debug_sql, pdb=pdb)
         suite = django_test_runner.build_suite([EXAMPLE_TEST_SUITE_PATH])
         runner_kwargs = django_test_runner.get_test_runner_kwargs()
         runner_kwargs.update(stream=output_stream, full_report=full_report)
@@ -128,6 +128,9 @@ class TimedTestRunnerTestCase(TestCase):
 
     def test_debug_sql(self):
         self._test_run(debug_sql=True)
+
+    def test_pdb(self):
+        self._test_run(pdb=True)
 
     @patch("django.core.management.commands.test.Command.handle", return_value="")
     @override_settings(TEST_RUNNER="django_timed_tests.TimedTestRunner")
