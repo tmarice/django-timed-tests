@@ -4,6 +4,7 @@ import sys
 from io import StringIO
 from unittest.mock import patch
 
+import django
 from django.core import management
 from django.test import TestCase, override_settings
 
@@ -114,6 +115,8 @@ class TimedTestRunnerTestCase(TestCase):
         else:
             self._test_short_formatting(output_stream)
 
+        return result
+
     def test_sequential_short_output(self):
         self._test_run()
 
@@ -127,10 +130,20 @@ class TimedTestRunnerTestCase(TestCase):
         self._test_run(parallel=3, full_report=True)
 
     def test_debug_sql(self):
-        self._test_run(debug_sql=True)
+        debug_sql_result = self._test_run(debug_sql=True)
+
+        self.assertIsNotNone(debug_sql_result.debug_sql_stream)
 
     def test_pdb(self):
-        self._test_run(pdb=True)
+        if django.VERSION[0] < 3:
+            return
+
+        pdb_result = self._test_run(pdb=True)
+
+        with patch("django.test.runner.pdb") as mock_pdb:
+            pdb_result.debug(error=(None, None, None))
+
+            self.assertEqual(mock_pdb.post_mortem.call_count, 1)
 
     @patch("django.core.management.commands.test.Command.handle", return_value="")
     @override_settings(TEST_RUNNER="django_timed_tests.TimedTestRunner")

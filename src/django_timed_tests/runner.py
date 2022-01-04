@@ -6,7 +6,20 @@ from unittest import TextTestResult, TextTestRunner
 from tabulate import tabulate
 
 import django
-from django.test.runner import DiscoverRunner, ParallelTestSuite, RemoteTestResult, RemoteTestRunner
+from django.test.runner import (
+    DebugSQLTextTestResult,
+    DiscoverRunner,
+    ParallelTestSuite,
+    RemoteTestResult,
+    RemoteTestRunner,
+)
+
+try:
+    from django.test.runner import PDBDebugResult
+except ImportError:
+
+    class PDBDebugResult:
+        pass
 
 
 class TimedRemoteTestResult(RemoteTestResult):
@@ -50,11 +63,11 @@ class TimedTextTestResult(TextTestResult):
         return super().addSuccess(test)
 
 
-class TimedDebugSQLTextTestResult(TimedTextTestResult):
+class TimedDebugSQLTextTestResult(DebugSQLTextTestResult, TimedTextTestResult):
     pass
 
 
-class TimedPDBDebugResult(TimedTextTestResult):
+class TimedPDBDebugResult(PDBDebugResult, TimedTextTestResult):
     pass
 
 
