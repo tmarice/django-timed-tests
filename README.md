@@ -6,7 +6,7 @@
 ## Requirements
 Python 3.6 through 3.10 supported.
 
-Django 2.0 through 4.0 supported.
+Django 2.0 through 4.1 supported.
 
 **`django-timed-tests` only works if you're using Django's testing framework.**
 

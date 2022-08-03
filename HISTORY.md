@@ -1,5 +1,8 @@
 # History
 
+## 0.1.3 (2022-08-03)
+* Support for Django 4.1
+
 ## 0.1.2 (2022-01-04)
 * Bugfix: `--debug-sql` and `--pdb` flags now provide their original Django functionality as well as timing
 
