@@ -1,4 +1,6 @@
 # History
+## 0.1.4 (2023-10-19)
+* Support for Django 4.2 and Python 3.11 and 3.12
 
 ## 0.1.3 (2022-08-03)
 * Support for Django 4.1

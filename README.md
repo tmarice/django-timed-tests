@@ -4,9 +4,11 @@
 `django-timed-tests` produce the timing breakdown for your tests.
 
 ## Requirements
-Python 3.6 through 3.10 supported.
+**Note: as of [cpython 3.12](https://github.com/python/cpython/pull/12271), timing functionality is supported by default**
 
-Django 2.0 through 4.1 supported.
+Python 3.6 through 3.12 supported.
+
+Django 2.0 through 4.2 supported.
 
 **`django-timed-tests` only works if you're using Django's testing framework.**
 
